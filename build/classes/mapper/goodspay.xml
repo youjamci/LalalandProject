@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="goodspay">
+
+	<!-- insertGoodsPay 실행 후 updateGdbChk 실행 필수! -->
+	<insert id="insertGoodsPay" parameterType="goods.vo.GdPayVO">
+	
+		<selectKey keyProperty="gdpCd" resultType="String" order="BEFORE">
+			SELECT NVL(MAX(GDP_CD)+1,1001) FROM GD_PAY
+		</selectKey>
+		
+		INSERT INTO GD_PAY
+		(
+			GDP_CD, 
+			GDP_SUM, 
+			GDP_DATE, 
+			GDP_MH, 
+			GDP_RNAME, 
+			GDP_RTEL, 
+			GDP_ADD, 
+			GDP_DADD, 
+			GDP_REQ, 
+			GDB_CD
+		)
+		VALUES
+		(
+			#{gdpCd}, 
+			#{gdpSum}, 
+			SYSDATE, 
+			#{gdpMh}, 
+			#{gdpRname}, 
+			#{gdpRtel}, 
+			#{gdpAdd}, 
+			#{gdpDadd}, 
+			#{gdpReq}, 
+			#{gdbCd}
+		)
+		
+	</insert>
+	
+	<update id="updateGdbChk" parameterType="goods.vo.GdPayVO">
+	
+		UPDATE GD_BUY
+		SET GDB_CHK = '구매완료'
+		WHERE GDB_CD = #{gdbCd}
+	
+	</update>
+	
+	<update id="cancleGoodsPay" parameterType="String">
+	
+		UPDATE GD_PAY
+		SET GDP_CHK = '환불완료'
+			, GDP_RCHK = '주문취소'
+		WHERE GDP_CD = #{gdpCd}
+	
+	</update>
+ 	
+ 	<select id="getAllGoodsPay" resultType="goods.vo.GdPayVO">
+ 	
+<!--  		SELECT * -->
+<!-- 		FROM GD_PAY -->
+<!-- 		ORDER BY GDP_DATE DESC -->
+		
+		SELECT MEM_ID, MEM_NAME, 
+		GDP_CD, GDP_SUM, GDP_DATE, GDP_MH, GDP_CHK, GDP_RNAME, GDP_RTEL, GDP_ADD, GDP_DADD, GDP_REQ, GDP_RCHK
+		FROM V_GDPAY
+		GROUP BY MEM_ID, MEM_NAME, 
+		GDP_CD, GDP_SUM, GDP_DATE, GDP_MH, GDP_CHK, GDP_RNAME, GDP_RTEL, GDP_ADD, GDP_DADD, GDP_REQ, GDP_RCHK
+ 	
+ 	</select>
+ 	
+ 	<select id="gdpCdGoods" parameterType="String" resultType="goods.vo.GdPayVO">
+ 	
+ 		SELECT GD_NAME, GD_NUM
+		FROM V_GDPAYGOODS
+		WHERE GDP_CD = #{gdpCd}
+		 	
+ 	</select>
+ 	
+ 	<select id="getGoodsSales" resultType="goods.vo.GoodsVO">
+ 	
+ 		SELECT GD.GD_CD, GD.GD_NAME, NVL(SUM,0) SUM, GD_CHK
+		FROM GD, (SELECT GD_CD, GD_NAME, SUM(GD_NUM) SUM
+		FROM V_GDPAYGOODS
+		WHERE GDP_CHK='결제완료'
+		GROUP BY GD_CD, GD_NAME) V
+		WHERE GD.GD_CD=V.GD_CD(+)
+		ORDER BY SUM DESC
+ 	
+ 	</select>
+ 	
+ 	<select id="getMyGoodsPay" parameterType="String" resultType="goods.vo.GdPayVO">
+	
+ 		SELECT *
+		FROM GD_PAY
+		WHERE GDB_CD IN (SELECT GDB_CD FROM GD_BUY WHERE MEM_ID = #{memId})
+		ORDER BY GDP_DATE DESC
+ 	
+ 	</select>
+	
+	<update id="updateGdbkNum" parameterType="goods.vo.GdPayVO">
+	
+		UPDATE GD_BK SET
+   		GD_NUM = #{gdNum}
+    	WHERE GD_CD = #{gdCd}
+	
+	</update>
+	
+	<insert id="insertGoodsBucketPayInfo" parameterType="goods.vo.GdPayVO">
+	
+			<selectKey keyProperty="gdpCd" resultType="String" order="BEFORE">
+				SELECT NVL(MAX(GDP_CD)+1,1001) FROM GD_PAY
+			</selectKey>
+	
+	INSERT INTO GD_PAY( GDP_CD, GDP_SUM, GDP_DATE, GDP_MH, GDP_RNAME, GDP_RTEL, GDP_ADD, GDP_DADD, GDP_REQ, GDB_CD)
+				VALUES(#{gdpCd} , 
+        			   (SELECT SUM(T.PRICE) TOTAL
+						FROM
+						(SELECT A.MEM_ID, B.GDB_CD, C.GD_CD ,B.GD_NUM, C.GD_PRICE, B.GD_NUM * C.GD_PRICE PRICE
+						FROM GD_BUY A, GD_BK B, GD C
+						WHERE A.GDB_CD = B.GDB_CD
+						AND B.GD_CD = C.GD_CD
+						AND A.MEM_ID = #{memId}) T
+						GROUP BY T.MEM_ID),
+        			   SYSDATE,
+        			   #{gdpMh},
+        			   #{gdpRname},
+        			   #{gdpRtel},
+        			   #{gdpAdd},
+        			   #{gdpDadd},
+        			   #{gdpReq},
+        			   (SELECT GDB_CD FROM GD_BUY WHERE MEM_ID = #{memId}))
+	
+	</insert>
+	
+	<delete id="deleteShoppingList" parameterType="goods.vo.GdBkVO">
+	
+			DELETE 
+			FROM
+			(
+			SELECT A.MEM_ID , B.GDB_CD, B.GD_CD, B.GD_NUM
+			FROM GD_BUY A , GD_BK B
+			WHERE A.GDB_CD = B.GDB_CD
+			AND MEM_ID = #{memId}
+			) T
+			WHERE GDB_CD = #{gdbCd}
+			AND GD_CD = #{gdCd}
+	
+	</delete>
+	
+</mapper>

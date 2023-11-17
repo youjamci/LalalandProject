@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<properties resource="db.properties" />
+
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+
+	<environments default="dev">
+		<environment id="dev">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+				<property name="poolMaximumActiveConnections" value="2" />
+				<property name="poolMaximumIdleConnections" value="2" />
+			</dataSource>
+		</environment>
+
+	</environments>
+
+	
+	
+	<mappers>
+		<mapper resource="mapper/goods.xml"/>
+		<mapper resource="mapper/News.xml"/>
+		<mapper resource="mapper/member.xml"/>
+		<mapper resource="mapper/goodspay.xml"/>
+		<mapper resource="mapper/attraction.xml"/>
+		<mapper resource="mapper/offgoods.xml"/>
+		<mapper resource="mapper/restaurant.xml"/>
+		<mapper resource="mapper/cmt.xml"/>
+		<mapper resource="mapper/cmtpay.xml"/>
+		<mapper resource="mapper/facility.xml"/>
+		<mapper resource="mapper/ticket.xml"/>
+		<mapper resource="mapper/userqna.xml"/>
+		<mapper resource="mapper/content.xml"/>
+		<mapper resource="mapper/ticketpay.xml"/>
+	</mappers>
+
+
+
+</configuration>
+

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cmtpay">
+
+
+	<resultMap type="cmt.vo.CmtPayVO" id="cmtMap">
+		<result column="CMTP_CD" property="cmtpCd" />
+		<result column="CMTP_MH" property="cmtpMh" />
+		<result column="CMTP_SUM" property="cmtpSum" />
+		<result column="CMTP_DATE" property="cmtpDate" />
+		<result column="CMTB_CD" property="cmtbCd" />
+		<result column="MEM_ID" property="memId" />
+		<result column="MEM_NAME" property="memName" />
+		<result column="CMT_CD" property="cmtCd" />
+		<result column="CMT_SORT" property="cmtSort" />
+		<result column="CMT_NAME" property="cmtName" />
+		<result column="CMT_NUM" property="cmtNum" />
+		<result column="CMT_PRICE" property="cmtPrice" />
+
+	</resultMap>
+	<select id="getAllCmtPay" resultMap="cmtMap">
+
+		SELECT M.MEM_ID, MEM_NAME,
+		CK.CMTB_CD, CMT.CMT_CD, CMTP_CD, CMTP_MH, CMT_NAME, CMT_SORT, CMT_NUM,
+		CMT_PRICE*CMT_NUM
+		CMTP_SUM, CMTP_DATE
+		FROM MEMBER M, CMT_BUY CB, CMT_BK
+		CK, CMT_PAY CP, CMT
+		WHERE M.MEM_ID=CB.MEM_ID
+		AND CB.CMTB_CD=CK.CMTB_CD
+		AND CK.CMTB_CD=CB.CMTB_CD
+		AND CB.CMTB_CD=CP.CMTB_CD
+		AND CMT.CMT_CD =
+		CK.CMT_CD
+		ORDER BY CK.CMTB_CD DESC
+
+	</select>
+
+	<select id="getMyCMTicketPay" parameterType="String"
+		resultType="cmt.vo.CmtPayVO">
+
+
+		SELECT CMT_NAME, CMT_SORT, CMT_NUM, CMT_PRICE*CMT_NUM
+		CMTP_SUM, CMTP_MH, CMTP_DATE
+		FROM MEMBER M, CMT_BUY CB, CMT_BK CK, CMT_PAY CP, CMT
+		WHERE M.MEM_ID=CB.MEM_ID
+		AND CB.CMTB_CD=CK.CMTB_CD
+		AND CB.CMTB_CD=CP.CMTB_CD
+		AND CMT.CMT_CD = CK.CMT_CD
+		AND M.MEM_ID = #{memId}
+		ORDER BY CK.CMTB_CD DESC
+
+	</select>
+
+
+
+</mapper>

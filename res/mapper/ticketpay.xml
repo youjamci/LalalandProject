@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ticketpay">
+ 	
+ 	<select id="getAllTicketPay" resultType="ticket.vo.TicketPayVO">
+ 	
+		SELECT *
+		FROM V_TKPAY
+		
+ 	</select>
+ 	
+ 	<select id="getMyTicketPay" parameterType="String" resultType="ticket.vo.TicketPayVO">
+ 	
+ 		SELECT *
+		FROM V_TKPAY
+		WHERE MEM_ID = #{memId}
+		 	
+ 	</select>
+ 	
+ 	<update id="cancleTicketPay" parameterType="String">
+ 	
+ 		UPDATE TK_PAY
+		SET TKP_CHK = '환불완료'
+		WHERE TKB_CD = #{tkbCd}
+ 	
+ 	</update>
+	
+</mapper>

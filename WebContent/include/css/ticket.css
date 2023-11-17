@@ -1,0 +1,149 @@
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f7f7f7;
+	margin: 0;
+	padding: 0;
+}
+
+/* Wrap Contents */
+#WrapContents {
+	background-color: #fff;
+	margin-top: 30px;
+	padding: 30px;
+}
+
+.page_tit {
+	text-align: center;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+/*달력*/
+.calendar_wrap .month {
+	text-align: center;
+	font-size: 24px;
+}
+
+.calendar_wrap .month .inner {
+	position: relative;
+}
+
+.calendar_wrap .month a {
+	position: absolute;
+	top: 50%;
+/* 	width: 24px; */
+	height: 24px;
+	margin-top: -12px;
+	background-image: url(/img/btn_next.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 12px;
+/* 	text-indent: -9999px; */
+	font-size: 20px;
+}
+
+.calendar_wrap .month .prev {
+	left: -120px;
+/* 	transform: rotate(180deg) */
+}
+
+.calendar_wrap .month .next {
+	right: -120px;
+}
+
+.calendar {
+	width: 50%;
+	margin: 0 auto;
+	font-size: 24px;
+	font-weight: 400;
+	text-align: center;
+	margin-top: 32px;
+}
+
+.calendar th {
+	text-align: center;
+	font-size: 20px;
+	padding-bottom: 20px;
+}
+
+.calendar a, .calendar .unable {
+	display: block;
+	color: #333;
+	padding: 26% 0;
+}
+
+.calendar td {
+	position: relative;
+}
+
+.calendar .unable {
+	opacity: .15;
+}
+
+.calendar .desc {
+	width: 100%;
+	font-size: 12px;
+	text-align: center;
+	position: absolute;
+	bottom: 5px;
+	left: 0;
+}
+
+.calendar .selected {
+	color: #fff;
+}
+
+.calendar .selected:after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: #F85549;
+	z-index: -1;
+}
+
+.calendar tr>th:first-child, .calendar tr>td:first-child .unable,
+	.calendar tr>td:first-child a:not(.selected) {
+	color: #F85549;
+}
+
+.calendar tr>th:last-child, .calendar tr>td:last-child .unable,
+	.calendar tr>td:last-child a {
+	color: #2498E5;
+}
+
+.calendar tr>td:first-child .selected, .calendar tr>td:last-child .selected
+	{
+	color: #fff;
+}
+
+.disabled {
+	color: lightgray;
+	cursor: default;
+}
+
+/* Button */
+.btn_wrap {
+	text-align: center;
+	margin-top: 30px;
+}
+
+.btn_wrap a.btn_type {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #d63384;
+	color: #fff;
+	font-size: 16px;
+	font-weight: bold;
+	text-decoration: none;
+	border-radius: 3px;
+	margin-bottom: 50px;
+}
+
+.btn_wrap a.btn_type:hover {
+	background-color: #d63384;
+}

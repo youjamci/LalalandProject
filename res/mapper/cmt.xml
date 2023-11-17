@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cmt">
+	
+	<!-- 1)구매  -->
+	<insert id="cmtBuyInsert" parameterType="cmt.vo.CmtBuyVO">
+		<selectKey resultType="String" order="BEFORE" keyProperty="cmtbCd">
+		SELECT NVL(MAX(TO_NUMBER(CMTB_CD)),0)+1 FROM CMT_BUY
+		</selectKey>
+		INSERT INTO CMT_BUY(CMTB_CD, MEM_ID)
+		VALUES(#{cmtbCd},#{memId})
+	</insert>
+	<!-- 2)장바구니 -->
+	<insert id="cmtBkInsert" parameterType="cmt.vo.CmtBuyVO">
+		INSERT INTO CMT_BK(CMTB_CD, CMT_CD, CMT_NUM)
+		VALUES(#{cmtbCd},#{cmtCd},#{cmtNum})
+	</insert>
+	<!-- 3)결제 -->
+	<insert id="cmtPayInsert" parameterType="cmt.vo.CmtBuyVO">
+		<selectKey resultType="String" order="BEFORE" keyProperty="cmtpCd">
+			SELECT NVL(MAX(CMTP_CD),0)+1 FROM CMT_PAY
+		</selectKey>
+		
+		INSERT INTO CMT_PAY(CMTP_CD, CMTP_MH, CMTP_SUM, CMTP_DATE, CMTB_CD)
+		VALUES(#{cmtpCd},#{cmtpMh},#{cmtpSum},sysdate,#{cmtbCd})
+	</insert>
+
+</mapper>

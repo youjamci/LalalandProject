@@ -1,0 +1,278 @@
+/* STYLE */
+@import url(font-awesome.css) screen;
+@import url(bootstrap.css) screen;
+@import url(owl.carousel.css) screen;
+@import url(pe-icon-7-stroke.css) screen;
+@import url(animate.min.css) screen;
+
+/* Fond header */
+header {
+	background-image:
+		url("https://cdn.dribbble.com/users/1677770/screenshots/4285859/__.gif");
+	background-position: center;
+	background-attachment: scroll;
+	background-repeat: repeat;
+	height: 300px;
+}
+
+/* Menu */
+#navbar {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: none; 
+}
+
+#navbar li {
+	float: left;
+}
+
+#navbar>li a {
+	display: block;
+	color: #F5646F;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+#navbar>li a:hover {
+	background-color: white;
+}
+
+#navigation {
+	font-size: 40px;
+	font-family: "Amatic SC";
+}
+
+/* Menu */
+
+/* #navbar .dropdown-menu { */
+/*   display: none; */
+/*   position: absolute; */
+/*   background-color: white; */
+/*   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); */
+/*   z-index: 1; */
+/* } */
+
+/* #navbar li:hover .dropdown-menu { */
+/*   display: block; */
+/* } */
+
+/* #navbar .dropdown-menu li { */
+/*   display: block; */
+/* } */
+
+/* #navbar .dropdown-menu li a { */
+/*   color: #F5646F; */
+/*   padding: 12px 16px; */
+/*   text-decoration: none; */
+/*   display: block; */
+/* } */
+
+/* #navbar .dropdown-menu li a:hover { */
+/*   background-color: white; */
+/* } */
+
+/*Sections page */
+Body {
+	background-color: #ffffff;
+}
+
+h1 {
+	font-size: 8em;
+	color: #F5646F;
+	font-family: "Amatic SC";
+	font-style: normal;
+	text-align: center;
+	border: dotted 5px pink;
+	border-radius: 100px;
+}
+
+h2 {
+	color: #F5646F;
+	font-size: 2em;
+	font-family: "Amatic SC";
+	text-align: center;
+	/*   border-bottom: 6px dotted lightblue */
+}
+
+h3 {
+	color: white;
+	font-family: "Amatic SC";
+	text-decoration: none;
+	font-size: 1.9em;
+	text-align: center;
+}
+
+h4 {
+	color: black;
+	font-family: "Amatic SC";
+	font-size: 1.4em;
+	text-align: center;
+	height: auto;
+}
+
+ul {
+	list-style-type: none;
+}
+
+p {
+	color: #808080;
+	font-family: "Amatic SC";
+	font-size: 1em;
+	text-align: center;
+	padding: 10px;
+}
+
+.element {
+	background-color: #5D2870;
+	border: 10px dotted lightblue
+}
+
+#perf {
+	width: 95%;
+	height: auto;
+	border: none;
+	display: flex;
+	flex-direction: row;
+	text-align: center;
+	font-weight: bold;
+	font-size: 26px;
+	font-family: "Amatic SC";
+	color: black;
+	list-style-type: none;
+}
+
+/* Pied de page */
+footer {
+	padding: 20px;
+	padding-bottom: 4px;
+	background: #F5646F;
+	font-weight: bold;
+	font-size: 28px;
+	text-align: center;
+	font-family: "Amatic SC";
+}
+
+footer * {
+	margin: 0;
+	padding: 0;
+}
+
+.mydetails, footer li {
+	list-style: none;
+	padding-bottom: 1px;
+	height: auto;
+}
+
+footer a {
+	text-decoration: none;
+}
+
+/* Responsive */
+
+/* @media screen and (max-width : 768px ){ */
+
+/*     section{ */
+/*         padding: 50px 20px ; */
+/*     } */
+
+/*     header > h1{ */
+/*         font-size: 65px; */
+/*     } */
+
+/*     #perf { */
+/*         flex-direction: column; */
+/*         max-width: 60%; */
+/*         margin: auto; */
+/*     } */
+
+/*     table, thead, tbody, th, td, tr {  */
+/* 		display: block;  */
+/* 	  } */
+
+/*     form { */
+/*         width: 90% ; */
+/*     } */
+
+/*     #navbar ul{ */
+/*         display: none; */
+/*         width: 100%; */
+/*         margin-top: 10px; */
+/*         padding-top: 10px; */
+/*         border-top: 1px solid #111; */
+/*     } */
+
+/*     #navbar ul li{ */
+/*         float: none; */
+/*     } */
+
+/*     #navbar{ */
+/*         display: block; */
+/*     }     */
+/* } */
+
+/*
+    NEWS SECTION
+ */
+.news-section{
+    display: block;
+    padding: 100px 0 80px;
+}
+.news-section .titie-section{
+    display: block;
+    margin-bottom: 80px;
+}
+.blog-item{}
+.blog-item img{
+    width: 100%;
+    height: auto;
+}
+.blog-item h3{
+    font-size: 18px;
+    font-weight: 600;
+    color: #555252;
+    display: block;
+    line-height: 24px;
+    position: relative;
+    margin: 15px 0 ;
+    padding: 0;
+}
+.blog-item h3:before{
+    content: "";
+    position: absolute;
+    width: 98%;
+    height: 3px;
+    display: block;
+    background: #F5646F;
+    bottom: -8px;
+}
+
+.blog-item p{
+    font-size: 14px;
+    font-weight: 40px;
+    line-height: 24px;
+    display: block;
+    margin-top: 10px;
+}
+.blog-item a:last-child{
+    display: inline-block;
+    color: #fff;
+    font-weight: 300;
+    background: #1abc9c;
+    padding: 10px 30px;
+    font-size: 16px;
+    border-radius: 3px;
+    transition: all 0.5s;
+}
+.blog-item a:last-child:hover{
+    background: #17A689
+}
+
+
+ 
+
+
+
+

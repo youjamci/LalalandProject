@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userqna">
+	
+<!-- 이 영역에 SQL에 맞는 태그를 이용하여 쿼리문을 작성한다.
+
+	사용되는 기본적인 태그들...
+	<select>  ~~~ </select>
+	<insert>  ~~~ </insert>
+	<update>  ~~~ </update>
+	<delete>  ~~~ </delete>
+	
+	위 태그에서 사용되는 속성들
+	
+	1) id속성 : 해당 태그를 호출할 때  namespace와 연결하여 사용하는 이름
+	
+	
+	2) parameterType 속성 : SQL문에 사용될 데이터가 들어있는 객체타입을 지정한다.
+						(보통 VO클래스, 자바의 자료형 이름, 또는 alias 등이 사용된다.)
+						
+	3) resultType 속성 : select 문을 실행한 결과를 담을 객체타입을 지정한다.		
+					 (보통 VO클래스, 자바의 자료형 이름, 또는 alias 등이 사용된다.)
+					
+	4) resultMap 속성 : 결과 레코드 컬럼명과 VO객체의 property명이 다를 경우에 적절한 매핑을 위해 사용된다.	
+				
+ -->	
+		
+	<insert id="insertQna" parameterType="lala.vo.customerQnaVO">
+  		<!-- (Q_CD, MEM_ID, Q_SORT, Q_TITLE, Q_CONTENT, Q_DATE, Q_IMG) -->
+  		<!-- order도 생략 가능, 인서트 전에 시퀀스를 실행시켜서 Q_CD에 넣기   -->
+		<selectKey keyProperty="qCd" resultType="String" order="BEFORE">
+		   select qna_seq.nextval from dual
+		</selectKey>
+	  		
+  		insert into QNA (Q_CD, MEM_ID, Q_SORT, Q_TITLE, Q_CONTENT, Q_DATE)
+  		values (#{qCd}, #{memId}, #{qSort}, #{qTitle}, #{qContent}, sysdate)
+	</insert>
+	
+	
+	<resultMap type="lala.vo.customerQnaVO" id="qnaMap">
+		<result column="Q_CD" property="qCd" />
+		<result column="MEM_ID" property="memId" />
+		<result column="Q_SORT" property="qSort" />
+		<result column="Q_TITLE" property="qTitle" />
+		<result column="Q_CONTENT" property="qContent" />
+		<result column="Q_DATE" property="qDate" />
+		<result column="Q_IMG" property="qImg" />
+		<result column="ADMIN_ID" property="adminId" />
+		<result column="A_CONTENT" property="aContent" />
+		<result column="A_DATE" property="aDate" />
+		<result column="A_CHK" property="aChk" />
+	</resultMap>
+	 
+	<!--고객센터 사용자에게 필요한 것  --> 
+	<select id ="getAllQnaList" parameterType="lala.vo.customerQnaVO" resultMap="qnaMap">
+		select * from QNA order by Q_CD DESC
+    </select>
+	
+	<!-- 파라미터타입: qna코드이기 때문에 String -->
+	<select id ="getQna" parameterType="String" resultType="lala.vo.customerQnaVO" >
+		SELECT
+		MEM_ID, Q_CD, Q_TITLE, Q_CONTENT, 
+		A_CONTENT, A_DATE, A_CHK 
+		from QNA
+		where Q_CD = #{qCd}
+	</select>
+	 
+	 	
+	<update id="updateQna" parameterType="lala.vo.customerQnaVO">
+	UPDATE 	QNA 
+	SET	Q_SORT = #{qSort},	
+		Q_TITLE = #{qTitle}, 
+		Q_CONTENT = #{qContent}
+	WHERE Q_CD = #{qCd} and
+		  MEM_ID = #{memId}
+	</update>
+	
+	
+	<!--문의내역 삭제 -->
+	<delete id="deleteQna" parameterType="String">
+		delete from QNA where Q_CD = #{qCd}
+	</delete>
+	
+	
+	
+	<!-- 관리자가 답변을 등록/수정하는 것 --> 
+	<update id="answerInsert"  parameterType="lala.vo.customerQnaVO">
+	
+	UPDATE QNA
+	SET ADMIN_ID = #{adminId},
+		A_CONTENT = #{aContent},
+    	A_DATE = sysdate,
+    	A_CHK = 'Y'
+	WHERE Q_CD = #{qCd} 
+	</update>
+	
+	
+	
+	<!--나의 문의내역 목록 확인  --> 
+	<select id="mypageQna"  parameterType="lala.vo.customerQnaVO" resultType="lala.vo.customerQnaVO">
+	SELECT * 
+	FROM QNA 
+	WHERE MEM_ID = #{memId}
+	
+	</select>
+	
+</mapper>

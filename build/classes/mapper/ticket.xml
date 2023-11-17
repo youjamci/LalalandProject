@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ticket">
+
+	<!-- 1)구매 -->
+	<insert id="tkBuyInsert" parameterType="ticket.vo.TicketBuyVO">
+		<selectKey resultType="String" order="BEFORE"
+			keyProperty="tkbCd">
+			SELECT NVL(MAX(TO_NUMBER(TKB_CD)),0)+1 FROM TK_BUY
+		</selectKey>
+		INSERT INTO TK_BUY(TKB_CD, MEM_ID)
+		VALUES(#{tkbCd},#{memId})
+	</insert>
+
+	<!-- 2)장바구니 -->
+	<insert id="tkBkInsert" parameterType="ticket.vo.TicketBuyVO">
+		INSERT INTO TK_BK(TKB_CD,TK_CD, TK_NUM, TK_DATE)
+		VALUES(#{tkbCd},#{tkCd},#{tkNum},#{tkDate})
+	</insert>
+
+	<!-- 3)결재 -->
+	<insert id="tkPayInsert" parameterType="ticket.vo.TicketBuyVO">
+		<selectKey resultType="String" order="BEFORE" keyProperty="tkpCd">
+			SELECT NVL(MAX(TKP_CD),0)+1 FROM TK_PAY
+		</selectKey>
+	
+		INSERT INTO TK_PAY(TKP_CD, TKP_MH, TKP_SUM, TKP_CHK, TKP_DATE, TKB_CD)
+		VALUES(#{tkpCd},#{tkpMh},#{tkpSum},'예매완료',sysdate,#{tkbCd})
+	</insert>
+
+</mapper>
+	

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="goods">
+
+	<insert id="insertGoods" parameterType="goods.vo.GoodsVO">
+	
+		INSERT INTO GD
+		(	
+			GD_CD,
+			GD_SORT,
+			GD_NAME,
+			GD_PRICE,
+			GD_STOCK,
+			GD_IMG,
+			GD_DIMG,
+			GD_INFO,
+			GD_CHK
+		)
+		VALUES
+		(
+			(SELECT #{gdSortCode}||NVL(MAX(SUBSTR(GD_CD,2))+1,1001)
+			FROM GD
+			WHERE SUBSTR(GD_CD,1,1) = #{gdSortCode}),
+			#{gdSort},
+			#{gdName},
+			#{gdPrice},
+			#{gdStock},
+			#{gdImg},
+			#{gdDimg},
+			#{gdInfo},
+			#{gdChk}
+		)
+	
+	</insert>
+	
+	<update id="updateGoods" parameterType="goods.vo.GoodsVO">
+	
+		UPDATE GD
+		SET GD_NAME = #{gdName},
+			GD_PRICE = #{gdPrice},
+			GD_STOCK = #{gdStock},
+			GD_IMG = #{gdImg},
+			GD_DIMG = #{gdDimg},
+			GD_INFO = #{gdInfo},
+			GD_CHK = #{gdChk}
+		WHERE GD_CD = #{gdCd}
+	
+	</update>
+	
+	<update id="changeGoods" parameterType="goods.vo.GoodsVO">
+	
+		UPDATE GD
+		SET GD_CHK = #{gdChk}
+		WHERE GD_CD = #{gdCd}
+	
+	</update>
+ 	
+ 	<select id="getAllGoods" resultType="goods.vo.GoodsVO">
+ 	
+ 		SELECT * FROM GD
+ 	
+ 	</select>
+ 	
+ 	<select id="getSalesGoods" resultType="goods.vo.GoodsVO">
+	
+ 		SELECT * FROM GD
+ 		WHERE GD_CHK = '판매중'
+ 	
+ 	</select>
+ 	
+ 	<select id="getAllGoodsSort" parameterType="String" resultType="goods.vo.GoodsVO">
+	
+ 		SELECT * FROM GD
+ 		WHERE SUBSTR(GD_CD,1,1) = #{gdSortCode}
+ 	
+ 	</select>
+ 	
+ 	<select id="getSalesGoodsSort" parameterType="String" resultType="goods.vo.GoodsVO">
+	
+ 		SELECT * FROM GD
+ 		WHERE SUBSTR(GD_CD,1,1) = #{gdSortCode}
+ 			AND GD_CHK = '판매중'
+ 	
+ 	</select>
+ 	
+ 	<select id="getGoods" parameterType="String" resultType="goods.vo.GoodsVO">
+ 	
+ 		SELECT * FROM GD
+		WHERE GD_CD = #{gdCd}
+ 	
+ 	</select>
+ 	
+ 	<insert id="insertZzim" parameterType="goods.vo.ZzimVO">
+ 	
+ 		INSERT INTO ZZIM(MEM_ID, GD_CD)
+		VALUES(#{memId}, #{gdCd})
+ 	
+ 	</insert>
+ 	
+ 	<delete id="deleteZzim" parameterType="goods.vo.ZzimVO">
+ 	
+ 		DELETE FROM ZZIM
+		WHERE MEM_ID = #{memId}
+			AND GD_CD = #{gdCd}
+ 		
+ 	</delete>
+ 	
+ 	<select id="getMyZzimCode" parameterType="String" resultType="goods.vo.GoodsVO">
+ 	
+ 		SELECT *
+		FROM GD
+		WHERE GD_CD IN
+		(SELECT GD_CD
+		FROM ZZIM
+		WHERE MEM_ID = #{memId})
+ 		
+ 	</select>
+ 	
+ 	<select id="getMyZzim" parameterType="String" resultType="goods.vo.GoodsVO">
+ 	
+ 		SELECT *
+		FROM GD
+		WHERE GD_CD IN
+		(SELECT GD_CD
+		FROM ZZIM
+		WHERE MEM_ID = #{memId})
+ 		
+ 	</select>
+ 	
+ 	<select id="getZzimOrder" resultType="goods.vo.GoodsVO">
+ 		
+ 		<!-- 순서대로 가져오기
+ 		resultType="java.util.LinkedHashMap" -->
+
+<!--  		SELECT GD.*, NVL(ZC,0) ZC -->
+<!-- 		FROM GD -->
+<!-- 		LEFT OUTER JOIN -->
+<!-- 		(SELECT GD_CD, COUNT(GD_CD) ZC -->
+<!-- 		FROM ZZIM -->
+<!-- 		GROUP BY GD_CD) Z -->
+<!-- 		ON GD.GD_CD = Z.GD_CD -->
+<!-- 		ORDER BY ZC DESC -->
+	
+	</select>
+	
+	<select id="getBestGoods" resultType="goods.vo.GoodsVO">
+	
+		SELECT *
+		FROM GD
+		WHERE GD_CD IN
+		(SELECT GD_CD
+		FROM ZZIM
+		GROUP BY GD_CD)
+ 		
+ 	</select>
+
+<!-- 정민 -->
+
+	<!-- 장바구니에 담기 -->
+	
+	<!-- 1) b003회원이 GD_BUY의 GBD_CHK가 구매중인 행이 있으면-->
+	<select id="existGdbCd" parameterType="goods.vo.GdBuyVO" resultType="String">
+		SELECT GDB_CD FROM GD_BUY WHERE MEM_ID = #{memId} AND GDB_CHK='구매중'
+	</select>
+	<insert id="existGdbCdInsert" parameterType="goods.vo.GdBkVO">
+		INSERT INTO GD_BK(GDB_CD, GD_CD, GD_NUM)
+		VALUES((SELECT GDB_CD FROM GD_BUY WHERE MEM_ID = #{memId} AND GDB_CHK='구매중'),#{gdCd},1)
+	</insert>
+	
+	<!-- 2) b003회원이 GD_BUY의 GBD_CHK가 구매중인 행이 없으면-->
+	<insert id="nonExistGdbCd" parameterType="goods.vo.GdBuyVO">
+		<selectKey resultType="String" order="BEFORE" keyProperty="gdbCd">
+			SELECT TO_CHAR(NVL(MAX(TO_NUMBER(GDB_CD))+1,1)) FROM GD_BUY
+		</selectKey>
+	
+		INSERT INTO GD_BUY(GDB_CD, GDB_CHK, MEM_ID)
+		VALUES(#{gdbCd},'구매중',#{memId})
+	</insert>
+	<!-- gdbCd는  nonExistGdbCd에서 gdbCd를 받아온 값을 gdBk.setGdbCd(gdbCd)-->
+	<insert id="nonExistGdbCdInsert" parameterType="goods.vo.GdBkVO">
+	
+	INSERT INTO GD_BK(GDB_CD, GD_CD, GD_NUM) 
+	VALUES(#{gdbCd}, #{gdCd}, 1)
+		
+	</insert>
+	
+	<update id="updateGoodsCount" parameterType="goods.vo.GdBkVO">
+	
+		UPDATE GD_BK
+		SET GD_NUM = #{gdNum}
+		WHERE GDB_CD = (SELECT GDB_CD FROM GD_BUY WHERE MEM_ID = #{memId} AND GDB_CHK='구매중')
+			AND GD_CD = #{gdCd}
+		
+<!-- 		옵션 : '구매완료' 와 '구매중'을 구분하지않고 구매코드로 판별하여 업데이트 -->
+<!-- 		UPDATE GD_BK SET GD_NUM = ? 
+			WHERE GDB_CD = (SELECT GDB_CD FROM GD_BUY WHERE MEM_ID = ? AND GDB_CHK='구매중') 
+			AND GD_CD = ?  -->
+		
+	</update>
+	
+	<select id="memberShoppingList" parameterType="goods.vo.GoodsVO" resultType="goods.vo.GoodsVO">
+	
+    SELECT A.GDB_CD, A.GD_CD, A.GD_NUM
+	     , B.GD_SORT, B.GD_NAME, B.GD_PRICE, B.GD_STOCK, B.GD_IMG, B.GD_DIMG, B.GD_INFO, B.GD_CHK
+	     , C.GDB_CHK, C.MEM_ID
+	FROM   GD_BK A, GD B, GD_BUY C
+	WHERE  A.GD_CD = B.GD_CD
+	AND    A.GDB_CD = C.GDB_CD
+	AND    C.MEM_ID = #{memId}
+	
+	</select>
+	
+</mapper>
